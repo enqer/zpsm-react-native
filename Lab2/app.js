@@ -14,7 +14,7 @@ console.log('Wartość największa w tablicy:', max);
 
 
 
-
+// Zad 3
 const user = {
     name: 'Paweł',
     surname: 'Kamiński',
@@ -47,3 +47,6 @@ const f = (u) => {
 }
 
 f(user)
+
+// Zad 4
+console.log(`Przedmiot z wagą 1 to: `, _.find(user.allGrades, {'weight' : 1 }))
