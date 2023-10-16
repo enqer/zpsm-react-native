@@ -50,3 +50,30 @@ f(user)
 
 // Zad 4
 console.log(`Przedmiot z wagą 1 to: `, _.find(user.allGrades, {'weight' : 1 }))
+
+// Zad 5
+
+function getMails(collection) {
+    const r = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    const e = collection
+        .filter(p => typeof p === 'string' && r.test(p))
+        .sort();
+
+    return e;
+}
+
+
+const collections = [
+    {},
+    15,
+    "hello@test.pl",
+    null,
+    ['aaa', 'bbb', 5],
+    'admin@gmail.com',
+    undefined,
+    'a34@yahoo.com',
+    '321@a',
+    '321.pl'
+];
+
+console.log(getMails(collections));
