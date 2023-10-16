@@ -39,8 +39,7 @@ const user = {
 }
 
 const f = (u) => {
-    let s = 0;
-    let w = 0;
+    let s = 0, w = 0;
     u.allGrades.forEach(p => [s += _.mean(p.grades) * p.weight, w += p.weight])
     console.log(`Imie: ${u.name}`);
     console.log(`Nazwisko: ${u.surname}`);
