@@ -7,56 +7,30 @@ import { useEffect, useState } from "react";
 
 const Calc = () => {
 
-  const [tab, setTab] = useState([]);
-  const [napis, setNapis] = useState('0');
+  const [napis, setNapis] = useState('');
 
 
 
-  const press = (e,sign) => {
-    setTab([...tab,sign]);
-    setNapis([...tab,sign].join(''))
+  const press = (sign) => {
+
+    setNapis(napis+sign)
     console.log(sign);
   }
   const clearBar = () => {
-    setTab([]);
-    setNapis('0');
+    // setTab([]);
+    setNapis('');
   }
 
   const oblicz = () => {
-    if (tab.isEmpty) setNapis('0')
-    if (tab.includes('+') || tab.includes('-') || tab.includes('x') || tab.includes('/')){
-      let index;
-      let s = tab.join('');
-      let w = 0;
-      switch (true){
-        case tab.includes('+'):
-          index = tab.lastIndexOf('+');
-          w = parseFloat(s.substring(0,index)) + parseFloat(s.substring(index+1));
-          break;
-        case tab.includes('-'):
-          index = tab.lastIndexOf('-');
-          w = parseFloat(s.substring(0,index)) - parseFloat(s.substring(index+1));
-          break;
-        case tab.includes('x'):
-          index = tab.lastIndexOf('x');
-          w = parseFloat(s.substring(0,index)) * parseFloat(s.substring(index+1));
-          break;
-        case tab.includes('/'):
-          index = tab.lastIndexOf('/');
-          w = parseFloat(s.substring(0,index)) / parseFloat(s.substring(index+1));
-          break;
-      }
-      setNapis(w);
-    }else{
-      clearBar()
-    }
+    setNapis(eval(napis))
   }
 
 
   return (
      <View style={styles.screen}>
        <View style={styles.ekran}>
-         <Text style={styles.ekranText}>{napis}</Text>
+         {napis === '' ? <Text style={styles.ekranText}>0</Text> : <Text style={styles.ekranText}>{napis}</Text>}
+
        </View>
        <TouchableOpacity onPress={() => clearBar()} style={[styles.kwadrat, styles.colorAc]}>
          <Text style={[styles.text]} >AC</Text>
@@ -65,49 +39,49 @@ const Calc = () => {
          <Text style={[styles.text]} > </Text>
        </View>
 
-       <TouchableOpacity onPress={(e) => press(e,'/')} style={[styles.kwadrat, styles.colorF]}>
+       <TouchableOpacity onPress={() => press('/')} style={[styles.kwadrat, styles.colorF]}>
          <Text style={styles.text}>/</Text>
        </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'7')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('7')} style={styles.kwadrat}>
          <Text style={styles.text}>7</Text>
        </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'8')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('8')} style={styles.kwadrat}>
          <Text style={styles.text}>8</Text>
        </TouchableOpacity >
-       <TouchableOpacity onPress={(e) => press(e,'9')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('9')} style={styles.kwadrat}>
          <Text style={styles.text}>9</Text>
        </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'x')} style={[styles.kwadrat, styles.colorF]}>
+       <TouchableOpacity onPress={() => press('*')} style={[styles.kwadrat, styles.colorF]}>
          <Text style={styles.text}>x</Text>
        </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'4')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('4')} style={styles.kwadrat}>
        <Text style={styles.text}>4</Text>
      </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'5')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('5')} style={styles.kwadrat}>
        <Text style={styles.text}>5</Text>
      </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'6')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('6')} style={styles.kwadrat}>
        <Text style={styles.text}>6</Text>
      </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'-')} style={[styles.kwadrat, styles.colorF]}>
+       <TouchableOpacity onPress={() => press('-')} style={[styles.kwadrat, styles.colorF]}>
        <Text style={styles.text}>-</Text>
      </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'1')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('1')} style={styles.kwadrat}>
          <Text style={styles.text}>1</Text>
        </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'2')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('2')} style={styles.kwadrat}>
        <Text style={styles.text}>2</Text>
      </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'3')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('3')} style={styles.kwadrat}>
        <Text style={styles.text}>3</Text>
      </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'+')} style={[styles.kwadrat, styles.colorF]}>
+       <TouchableOpacity onPress={() => press('+')} style={[styles.kwadrat, styles.colorF]}>
          <Text style={styles.text}>+</Text>
        </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'0')} style={[styles.kwadrat, styles.gap]}>
+       <TouchableOpacity onPress={() => press('0')} style={[styles.kwadrat, styles.gap]}>
          <Text style={styles.text}>0</Text>
        </TouchableOpacity>
-       <TouchableOpacity onPress={(e) => press(e,'.')} style={styles.kwadrat}>
+       <TouchableOpacity onPress={() => press('.')} style={styles.kwadrat}>
          <Text style={styles.text}>,</Text>
        </TouchableOpacity>
        <TouchableOpacity onPress={oblicz} style={[styles.kwadrat, styles.colorF]}>
