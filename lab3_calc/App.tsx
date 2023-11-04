@@ -5,17 +5,18 @@
  * @format
  */
 
-import React from 'react';
+import React, { useEffect } from "react";
 import type {PropsWithChildren} from 'react';
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
-  View,
-} from 'react-native';
+  View
+} from "react-native";
 
 import {
   Colors,
@@ -24,9 +25,10 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import Calc from "./components/calc";
+import Calc from "./components/Calc";
 import {useWindowDimensions} from "react-native"
 import Calc_horizontal from "./components/Calc_horizontal";
+import SplashScreen from 'react-native-splash-screen'
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -60,6 +62,17 @@ function Section({children, title}: SectionProps): JSX.Element {
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  //
+  useEffect((() => {
+    // @ts-ignore
+
+    if(Platform.OS === 'android') { // @ts-ignore
+      SplashScreen.hide();
+      // @ts-ignore
+      // setTimeout(1000, () => SplashScreen.hide());
+    }
+  }), [])
+
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
