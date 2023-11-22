@@ -186,7 +186,12 @@ const Calc = () => {
   }
 
   const oblicz = () => {
+  try{
+
     setNapis(eval(napis))
+    } catch (e){
+        setNapis('0')
+    }
   }
 
 
