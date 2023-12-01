@@ -1,12 +1,11 @@
-import {Alert, Text, TouchableOpacity, View} from "react-native";
-import {useEffect, useRef, useState} from "react";
+import {Text, TouchableOpacity, View} from "react-native";
+import {useEffect, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
 import QuizResult from "./quizResult";
 
 
 let timer = () => {};
 const Test = () => {
-    // TODO odliczanie czasu i zmienianie szerokości paska od czasu
     const nav = useNavigation()
     const [score,setScore] = useState(0)
     const [whichQuestion, setWhichQuestion] = useState(0)
@@ -110,11 +109,7 @@ const Test = () => {
     }
 
     const handleAnswer = (answer) => {
-        console.log(`answer ${score}`)
         answer ? setScore(score => score + 1) : null
-        // if (answer)
-            // updateScore()
-        console.log(score)
         showNextQuestion()
         start()
     }
@@ -143,7 +138,6 @@ const Test = () => {
             </>
         )
     }
-
 
     return(
         <View style={{width: '90%',flexDirection: 'column', alignSelf: 'center', marginTop: 25}}>
