@@ -1,8 +1,10 @@
 import {Alert, Text, TouchableOpacity, View} from "react-native";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
 import QuizResult from "./quizResult";
 
+
+let timer = () => {};
 const Test = () => {
     // TODO odliczanie czasu i zmienianie szerokości paska od czasu
     const nav = useNavigation()
@@ -77,11 +79,34 @@ const Test = () => {
     }
     ]
 
+
+
+    const [timeLeft, setTimeLeft] = useState(30);
+
+        const startTimer = () => {
+            timer = setTimeout(() => {
+                if(timeLeft <= 0){
+                    clearTimeout(timer);
+                    showNextQuestion()
+                    start()
+                    return false;
+                }
+                setTimeLeft(timeLeft-1);
+            }, 1000)
+        }
+
+        useEffect(() => {
+            startTimer();
+            return () => clearTimeout(timer);
+        });
+
+        const start = () => {
+            setTimeLeft(30);
+            clearTimeout(timer);
+            startTimer();
+        }
     const showNextQuestion = () => {
-        // if (whichQuestion + 1 === tasks.length)
-        //     nav.navigate("result");
-        // else
-            setWhichQuestion((whichQuestion) => whichQuestion + 1)
+        setWhichQuestion((whichQuestion) => whichQuestion + 1)
     }
 
     const handleAnswer = (answer) => {
@@ -91,13 +116,14 @@ const Test = () => {
             // updateScore()
         console.log(score)
         showNextQuestion()
+        start()
     }
     const displayQuestion = (qNum) => {
         return(
             <>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Text style={{fontSize: 18, color: 'black'}}>Question {qNum+1} of {tasks.length}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>Time: 28 sec</Text>
+                    <Text style={{fontSize: 18, color: 'black'}}>Time: {timeLeft} sec</Text>
                 </View>
                 <View style={{backgroundColor: 'grey', height: 10, borderRadius: 15, marginTop: 15, borderWidth: 2, padding: 0}}>
                     <View style={{backgroundColor: 'white', height: 6, borderRadius: 15, padding:0, margin:0, width: '80%'}}></View>
