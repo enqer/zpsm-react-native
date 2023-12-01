@@ -126,7 +126,7 @@ const Test = () => {
                     <Text style={{fontSize: 18, color: 'black'}}>Time: {timeLeft} sec</Text>
                 </View>
                 <View style={{backgroundColor: 'grey', height: 10, borderRadius: 15, marginTop: 15, borderWidth: 2, padding: 0}}>
-                    <View style={{backgroundColor: 'white', height: 6, borderRadius: 15, padding:0, margin:0, width: '80%'}}></View>
+                    <View style={{backgroundColor: 'white', height: 6, borderRadius: 15, padding:0, margin:0, width: `${timeLeft*3.3}%`}}></View>
                 </View>
                 <View>
                     <Text style={{color: 'black', textAlign: 'center', fontSize: 24, marginTop: 20, marginBottom: 20}}>{tasks[qNum].question}</Text>
