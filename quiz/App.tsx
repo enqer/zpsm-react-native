@@ -14,6 +14,7 @@ import CustomDrawer from "./components/customDrawer";
 import SplashScreen from 'react-native-splash-screen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Platform, Alert, Text} from "react-native";
+import QuizResult from "./components/quizResult";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -25,9 +26,11 @@ function App(): JSX.Element {
 const a = [1,2,3]
     const storeData = async () => {
         const rules = {
-            '1': 'Pierwsze',
-            '2': 'Drugie',
-            '3': 'Trzecieee',
+            '1': 'Nie będziesz miał quizów cudzych przede mną.',
+            '2': 'Wybierasz tylko jedną odpowiedź.',
+            '3': 'Nie oszukuj.',
+            '4': 'Wszystkie wyniki będą udostępnione.',
+            '5': 'Nie pożądaj wyniku bliźniego swego.',
         }
         try {
             const jsonValue = JSON.stringify(rules);
@@ -77,7 +80,7 @@ const a = [1,2,3]
           >
               <Drawer.Screen name="home" component={Home} />
               <Drawer.Screen name="results" component={Results} />
-              <Drawer.Screen name="test" component={Test} />
+              <Drawer.Screen name="test" component={Test} options={{unmountOnBlur: true}} />
           </Drawer.Navigator>
       </NavigationContainer>
   );
