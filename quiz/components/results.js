@@ -21,7 +21,7 @@ const Results = () => {
             </View>
             {arr.map((row, index) => {
                 return (
-                    <RowResult index={index} nick={"asdas"} point={"18/20"} type={"test1"} date={"21-11-2022"} />
+                    <RowResult key={index} index={index} nick={"asdas"} point={"18/20"} type={"test1"} date={"21-11-2022"} />
                 )
             })}
         </View>

@@ -10,7 +10,7 @@ const Home = () => {
             <ScrollView>
             {arr.map((a,index) =>{
                 return(
-                    <TouchableOpacity onPress={() => nav.navigate("test")}>
+                    <TouchableOpacity key={index} onPress={() => nav.navigate("test")}>
                         <TestCard name={a} index={index}  />
                     </TouchableOpacity>
 
