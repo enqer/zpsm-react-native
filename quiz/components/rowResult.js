@@ -4,7 +4,7 @@ const RowResult = (props) => {
     return (
         <View style={{flexDirection: 'row'}}>
             <View style={styles.btn}><Text style={styles.text}>{props.nick}</Text></View>
-            <View style={styles.btn}><Text style={styles.text}>{props.point}</Text></View>
+            <View style={styles.btn}><Text style={styles.text}>{props.score}/{props.total}</Text></View>
             <View style={styles.btn}><Text style={styles.text}>{props.type}</Text></View>
             <View style={styles.btn}><Text style={styles.text}>{props.date}</Text></View>
         </View>
