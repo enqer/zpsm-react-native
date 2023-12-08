@@ -9,7 +9,7 @@ import {
     SafeAreaView
 } from "react-native";
 import RowResult from "./rowResult";
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 const Results = () => {
 
@@ -59,6 +59,8 @@ const Results = () => {
         }
     ]
 
+    const [res, setRes] = useState([])
+
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(() => {
@@ -67,6 +69,17 @@ const Results = () => {
             setRefreshing(false);
         }, 2000);
     }, []);
+
+    useEffect(() => {
+        fetch('https://tgryl.pl/quiz/results')
+            .then(response => response.json())
+            .then(data => setRes(data)
+            )
+            .catch(error => {
+                console.error(error);
+            });
+    }, [])
+
     return(
         <View style={{flexDirection: 'column', alignItems: 'center', marginTop: 20, width: '100%'}}>
             <View style={{flexDirection: 'row'}}>
@@ -93,7 +106,7 @@ const Results = () => {
                     refreshControl={
                         <RefreshControl freshing={refreshing} onRefresh={onRefresh} />
                     }>
-                <FlatList data={results} renderItem={({item}) => <RowResult  nick={item.nick} score={item.score} total={item.total} type={item.type} date={item.date} /> }/>
+                <FlatList data={res} renderItem={({item}) => <RowResult  nick={item.nick} score={item.score} total={item.total} type={item.type} date={(item.createdOn).substring(0,10)} /> }/>
                 </ScrollView>
             {/*</ScrollView>*/}
         </View>
