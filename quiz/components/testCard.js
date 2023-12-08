@@ -22,7 +22,8 @@ const styles ={
     text :{
         margin: 3,
         color: 'black',
-        fontSize: 12
+        fontSize: 12,
+        fontFamily: 'hadvig'
     }
 }
 export default TestCard
