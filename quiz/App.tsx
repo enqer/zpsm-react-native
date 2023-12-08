@@ -15,6 +15,7 @@ import SplashScreen from 'react-native-splash-screen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Platform, Alert, Text} from "react-native";
 import QuizResult from "./components/quizResult";
+import DisplayTests from "./components/displayTests";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -23,8 +24,11 @@ const logo = require("./assets/quiz.png")
 
 function App(): JSX.Element {
 
-const a = [1,2,3]
+    const a = [1,2,3]
     const [isFirstTimeOpen, setIsFirstTimeOpen]=useState(false)
+    const [tests, setTests] = useState<any[]>([])
+
+
     const rules = {
         '1': 'Nie będziesz miał quizów cudzych przede mną.',
         '2': 'Wybierasz tylko jedną odpowiedź.',
@@ -79,14 +83,31 @@ const a = [1,2,3]
                 ,[{text: "ok"}])
     }
 
+    const getTest = () => {
+        fetch('https://tgryl.pl/quiz/tests')
+            .then(response => response.json())
+            .then(data => {
+                    setTests(data)
+                    tests.map((t) => {
+                        console.log(t.name)
+                    })
+                }
+            )
+            .catch(error => {
+                console.error(error);
+            });
+
+    }
+
     useEffect(() => {
         if (Platform.OS === 'android')
             SplashScreen.hide();
         checkFirstTimeOpen().then(r => null)
-
+        getTest()
         // storeData().then(r => getData())
     }, [])
 
+    // @ts-ignore
     // @ts-ignore
     return (
       <NavigationContainer>
@@ -108,7 +129,14 @@ const a = [1,2,3]
           >
               <Drawer.Screen name="home" component={Home} />
               <Drawer.Screen name="results" component={Results} />
-              <Drawer.Screen name="test" component={Test} options={{unmountOnBlur: true}} />
+              {/*<Drawer.Screen name="tests" component={DisplayTests} options={{unmountOnBlur: true}} />*/}
+              {/*<Stack.Screen name="test" component={Test} />*/}
+              {tests.map((t, index) => {
+                  return(
+                      <Drawer.Screen name={t.name} key={index} component={Test} initialParams={{id: t.id}} />
+                  )
+              })}
+
           </Drawer.Navigator>
       </NavigationContainer>
   );

@@ -1,6 +1,7 @@
 import {Alert, Button, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import TestCard from "./testCard";
 import {useNavigation} from "@react-navigation/native";
+import DisplayTests from "./displayTests";
 
 const Home = () => {
     const nav = useNavigation()
@@ -8,14 +9,16 @@ const Home = () => {
     return(
         <View style={styles.container}>
             <ScrollView>
-            {arr.map((a,index) =>{
-                return(
-                    <TouchableOpacity key={index} onPress={() => nav.navigate("test")}>
-                        <TestCard name={a} index={index}  />
-                    </TouchableOpacity>
+            {/*{arr.map((a,index) =>{*/}
+            {/*    return(*/}
+            {/*        <TouchableOpacity key={index} onPress={() => nav.navigate("test")}>*/}
+            {/*            <TestCard name={a} index={index}  />*/}
+            {/*        </TouchableOpacity>*/}
 
-                )}
-            )}
+            {/*    )}*/}
+            {/*)}*/}
+
+                <DisplayTests />
                 <View style={[styles.res, { }]}>
                     <Text style={{color:'black', padding: 5, fontSize: 16}}>Get to know your ranking result</Text>
                     <TouchableOpacity style={styles.btn} onPress={() => nav.navigate("results")}>
