@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { NavigationContainer} from "@react-navigation/native";
 // @ts-ignore
@@ -24,42 +24,70 @@ const logo = require("./assets/quiz.png")
 function App(): JSX.Element {
 
 const a = [1,2,3]
+    const [isFirstTimeOpen, setIsFirstTimeOpen]=useState(false)
+    const rules = {
+        '1': 'Nie będziesz miał quizów cudzych przede mną.',
+        '2': 'Wybierasz tylko jedną odpowiedź.',
+        '3': 'Nie oszukuj.',
+        '4': 'Wszystkie wyniki będą udostępnione.',
+        '5': 'Nie pożądaj wyniku bliźniego swego.',
+    }
+    const msg = Object.entries(rules).map(([key, value]) => `\n${key}. ${value}`).join(" ")
     const storeData = async () => {
-        const rules = {
-            '1': 'Nie będziesz miał quizów cudzych przede mną.',
-            '2': 'Wybierasz tylko jedną odpowiedź.',
-            '3': 'Nie oszukuj.',
-            '4': 'Wszystkie wyniki będą udostępnione.',
-            '5': 'Nie pożądaj wyniku bliźniego swego.',
-        }
+
         try {
-            const jsonValue = JSON.stringify(rules);
-            await AsyncStorage.setItem('my-key', jsonValue);
+            // const jsonValue = JSON.stringify(rules);
+            // await AsyncStorage.setItem('my-key', jsonValue);
+            await AsyncStorage.setItem('isFirstTimeOpen', 'false')
         } catch (e) {
             // saving error
         }
     };
     const getData = async () => {
         try {
-            const jsonValue = await AsyncStorage.getItem('my-key');
-            if (jsonValue != null) {
-                let rules = JSON.parse(jsonValue)
-                let msg = Object.entries(rules).map(([key, value]) => `\n${key}. ${value}`).join(" ")
-                Alert.alert('Regulamin',
-                    msg
-               ,[{text: "ok"}]);
-            }
+            const jsonValue = await AsyncStorage.getItem('isFirstTimeOpen');
+            console.log(jsonValue)
+            // @ts-ignore
+            setIsFirstTimeOpen(jsonValue)
+            // if (jsonValue) {
+            //     setIsFirstTimeOpen(false)
+            //     // let rules = JSON.parse(jsonValue)
+            //     let msg = Object.entries(rules).map(([key, value]) => `\n${key}. ${value}`).join(" ")
+            //     Alert.alert('Regulamin',
+            //         msg
+            //    ,[{text: "ok"}]);
+            // }
         } catch (e) {
             // error reading value
         }
     };
+    const checkFirstTimeOpen = async () =>{
+        const res = await AsyncStorage.getItem("isFirstTimeOpen")
+        console.log("resese" + res)
+        if (res == null){
+            setIsFirstTimeOpen(true)
+            console.log("res" + isFirstTimeOpen)
+            showRules()
+        }
+        storeData().then(r => getData())
+    }
+
+    const showRules = () => {
+        console.log(isFirstTimeOpen)
+            Alert.alert('Regulamin',
+                msg
+                ,[{text: "ok"}])
+    }
 
     useEffect(() => {
         if (Platform.OS === 'android')
             SplashScreen.hide();
-        storeData().then(r => getData())
+        checkFirstTimeOpen().then(r => null)
+
+        // storeData().then(r => getData())
     }, [])
 
+    // @ts-ignore
     return (
       <NavigationContainer>
           <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />} initialRouteName="home"
