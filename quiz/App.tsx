@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Platform, Alert, Text} from "react-native";
 import QuizResult from "./components/quizResult";
 import DisplayTests from "./components/displayTests";
+import FetchData from "./components/fetchData";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();

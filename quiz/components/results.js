@@ -9,66 +9,23 @@ import {
     SafeAreaView
 } from "react-native";
 import RowResult from "./rowResult";
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 const Results = () => {
 
 
-    const results = [
-        {
-            "nick": "Marek",
-            "score": 18,
-            "total": 20,
-            "type": "historia",
-            "date": "2022-11-22"
-        },
-        {
-            "nick": "Jaruś",
-            "score": 3,
-            "total": 20,
-            "type": "wos",
-            "date": "2020-01-22"
-        },
-        {
-            "nick": "Bartek",
-            "score": 20,
-            "total": 20,
-            "type": "biologia",
-            "date": "2022-04-2"
-        },
-        {
-            "nick": "Krystian",
-            "score": 18,
-            "total": 20,
-            "type": "geografia",
-            "date": "2021-11-11"
-        },
-        {
-            "nick": "Antonina",
-            "score": 11,
-            "total": 20,
-            "type": "historia",
-            "date": "2022-11-22"
-        },
-        {
-            "nick": "Antonina",
-            "score": 11,
-            "total": 20,
-            "type": "historia",
-            "date": "2022-11-22"
-        }
-    ]
+
 
     const [res, setRes] = useState([])
 
-    const [refreshing, setRefreshing] = React.useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
-    const onRefresh = React.useCallback(() => {
+    const onRefresh = (() => {
         setRefreshing(true);
         setTimeout(() => {
             setRefreshing(false);
         }, 2000);
-    }, []);
+    });
 
     useEffect(() => {
         fetch('https://tgryl.pl/quiz/results')
@@ -78,7 +35,7 @@ const Results = () => {
             .catch(error => {
                 console.error(error);
             });
-    }, [])
+    }, [refreshing])
 
     return(
         <View style={{flexDirection: 'column', alignItems: 'center', marginTop: 20, width: '100%'}}>
@@ -104,7 +61,7 @@ const Results = () => {
             {/*<ScrollView horizontal={false}>*/}
                 <ScrollView horizontal={true} contentContainerStyle={{width: '100%', flex: 1,}}
                     refreshControl={
-                        <RefreshControl freshing={refreshing} onRefresh={onRefresh} />
+                        <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()} />
                     }>
                 <FlatList data={res} renderItem={({item}) => <RowResult  nick={item.nick} score={item.score} total={item.total} type={item.type} date={(item.createdOn).substring(0,10)} /> }/>
                 </ScrollView>
