@@ -3,7 +3,9 @@ import {useEffect, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
 import QuizResult from "./quizResult";
 
-
+import _ from 'lodash';
+import NetInfo from "@react-native-community/netinfo";
+import {getTestsFromDB} from "./sqlite";
 
 const Test = ({route}) => {
     const nav = useNavigation()
@@ -65,6 +67,8 @@ const Test = ({route}) => {
             const respone = await fetch(`https://tgryl.pl/quiz/test/${route.params.id}`)
             const json = await respone.json()
             setData(json)
+            _.shuffle(data.tasks)
+            console.log("id" +route.params.id)
             // setDuration(json.tasks[0].duration)
             setTag(json.tags[0])
             setTotal(json.tasks.length)
@@ -73,15 +77,56 @@ const Test = ({route}) => {
             // setTimeLeft(json.tasks[0].duration)
             startTimer(json.tasks[0]?.duration)
         }catch (e){
-            console.error()
+            console.log(e)
         }
     }
     const fetchDataInit = async () => {
         await fetchData()
     }
 
+    const getTestFromDbById = (id) => {
+        const t = getTestsFromDB()
+        console.log("log" + t.then((data) =>{
+            // console.log(JSON.parse(data.rows.item(1).json).description)
+            let  arr = []
+            console.log(data.rows.length)
+            for (let i=0;i<data.rows.length;i++){
+                let body = {
+                    id: JSON.parse(data.rows.item(i).json).id,
+                    description :JSON.parse(data.rows.item(i).json).description,
+                    level: JSON.parse(data.rows.item(i).json).level,
+                    name: JSON.parse(data.rows.item(i).json).name,
+                    tags: JSON.parse(data.rows.item(i).json).tags,
+                    tasks: JSON.parse(data.rows.item(i).json).tasks,
+                    numberOfTasks: JSON.parse(data.rows.item(i).json).tasks.length
+                }
+                arr.push(body)
+            }
+            let t = arr.filter((f) => f.id === id)[0]
+            setData(t)
+            console.log("id" +route.params.id)
+            // setDuration(json.tasks[0].duration)
+            setTag(t.tags[0])
+            setTotal(t.tasks.length)
+            for (let i = 0; i< t.tasks.length; i++)
+                setDurations(durations=>[...durations,t.tasks[0].duration])
+            // setTimeLeft(json.tasks[0].duration)
+            startTimer(t.tasks[0]?.duration)
+        }))
+    }
+
     useEffect( () => {
-        fetchDataInit()
+        NetInfo.fetch().then((state) => {
+            if (state.isConnected){
+                fetchDataInit()
+            }else {
+                getTestFromDbById(route.params.id)
+
+            }
+
+        });
+        // fetchDataInit()
+        console.log("oby działało heheheh" +route.params.id)
     },[])
     const handlerPostResult = async () => {
         await fetch('https://tgryl.pl/quiz/result', {
@@ -99,7 +144,7 @@ const Test = ({route}) => {
         })
             .then((res) => res.json())
             .then((result)=>console.log(result))
-            .catch(console.error)
+            .catch(er => console.log(er))
     }
 
     const showNextQuestion = async () => {

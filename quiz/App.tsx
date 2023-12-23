@@ -13,21 +13,38 @@ import Test from "./components/test";
 import CustomDrawer from "./components/customDrawer";
 import SplashScreen from 'react-native-splash-screen'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Platform, Alert, Text} from "react-native";
-import QuizResult from "./components/quizResult";
-import DisplayTests from "./components/displayTests";
-import FetchData from "./components/fetchData";
+import {Platform, Alert, Text, Button} from "react-native";
+// import {CronJob} from 'cron';
+import {openDatabase, SQLiteDatabase} from "react-native-sqlite-storage";
+// @ts-ignore
+import NetInfo from "@react-native-community/netinfo";
+// import databa
+//
+//
+const db = openDatabase({
+    name: "rn_sqlite"
+})
+
+import { createTableTest, getTestsFromDB, addTestToDB} from './components/sqlite'
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const logo = require("./assets/quiz.png")
+// @ts-ignore
+import _ from 'lodash';
+
+
+// let DB:any
+// const getDB = () => DB ? DB : DB = openDatabase({name: 'md.db', createFromLocation: 1})
 
 function App(): JSX.Element {
+
 
     const a = [1,2,3]
     const [isFirstTimeOpen, setIsFirstTimeOpen]=useState(false)
     const [tests, setTests] = useState<any[]>([])
+    const [randomTest, setRandomTest] = useState('')
+
 
 
     const rules = {
@@ -41,11 +58,9 @@ function App(): JSX.Element {
     const storeData = async () => {
 
         try {
-            // const jsonValue = JSON.stringify(rules);
-            // await AsyncStorage.setItem('my-key', jsonValue);
             await AsyncStorage.setItem('isFirstTimeOpen', 'false')
         } catch (e) {
-            // saving error
+            console.log(e)
         }
     };
     const getData = async () => {
@@ -54,16 +69,8 @@ function App(): JSX.Element {
             console.log(jsonValue)
             // @ts-ignore
             setIsFirstTimeOpen(jsonValue)
-            // if (jsonValue) {
-            //     setIsFirstTimeOpen(false)
-            //     // let rules = JSON.parse(jsonValue)
-            //     let msg = Object.entries(rules).map(([key, value]) => `\n${key}. ${value}`).join(" ")
-            //     Alert.alert('Regulamin',
-            //         msg
-            //    ,[{text: "ok"}]);
-            // }
         } catch (e) {
-            // error reading value
+            console.log(e)
         }
     };
     const checkFirstTimeOpen = async () =>{
@@ -89,27 +96,102 @@ function App(): JSX.Element {
             .then(response => response.json())
             .then(data => {
                     setTests(data)
-                    tests.map((t) => {
-                        console.log(t.name)
-                    })
+                    // setRandomTest(data[Math.floor(Math.random()*data.length)])
+                    setRandomTest(data[Math.floor(Math.random()*data.length)].id)
+                console.log(randomTest+ "rand")
+                console.log(data[Math.floor(Math.random()*data.length)].id + " hihihi")
                 }
             )
             .catch(error => {
-                console.error(error);
+                console.log("brak neta")
+                // console.error(error);
             });
-
+        // createTableTest().then(r => console.log(r))
+        saveTestToDb()
+        console.log("TO JEST RANDOM: " + randomTest)
     }
+
+
+    const saveTestToDb = () =>{
+        // createTable(DB).then((d:any) => console.log(d)).catch((er:any) => console.log(er))
+        tests.map((test) => {
+                getTestToDb(test.id)
+        })
+    }
+    const getTestToDb = (id:any) => {
+        fetch(`https://tgryl.pl/quiz/test/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                    addTestToDB(JSON.stringify(data)).then(r => console.log(r))
+                }
+            )
+            .catch(error => {
+                console.log(error);
+            });
+        // console.log("test" + getAllTest(DB).tests)
+    }
+
+    const getTestFromDb =  () => {
+        const t = getTestsFromDB()
+        console.log("log" + t.then((data) =>{
+            // console.log(JSON.parse(data.rows.item(1).json).description)
+            let  arr = []
+            console.log(data.rows.length)
+            for (let i=0;i<data.rows.length;i++){
+                let body = {
+                    id: JSON.parse(data.rows.item(i).json).id,
+                    description :JSON.parse(data.rows.item(i).json).description,
+                    level: JSON.parse(data.rows.item(i).json).level,
+                    name: JSON.parse(data.rows.item(i).json).name,
+                    tags: JSON.parse(data.rows.item(i).json).tags,
+                    tasks: JSON.parse(data.rows.item(i).json).tasks,
+                    numberOfTasks: JSON.parse(data.rows.item(i).json).tasks.length
+                }
+                arr.push(body)
+            }
+            setTests(arr)
+            setRandomTest(arr[Math.floor(Math.random()*arr.length)].id)
+            console.log("re" +randomTest)
+        }))
+    }
+
 
     useEffect(() => {
         if (Platform.OS === 'android')
             SplashScreen.hide();
         checkFirstTimeOpen().then(r => null)
-        getTest()
+        NetInfo.fetch().then((state: { isConnected: any; type: any; }) => {
+            if (state.isConnected){
+                console.log("Connection type", state.type);
+                console.log("Is connected?", state.isConnected);
+                getTest()
+            }else {
+                getTestFromDb()
+                console.log("Connection type", state.type);
+                console.log("Is connected?", state.isConnected);
+            }
+
+        });
+        //
         // storeData().then(r => getData())
     }, [])
 
-    // @ts-ignore
-    // @ts-ignore
+    useEffect(() => {
+        const everyDay = () => {
+            createTableTest().then((t => console.log(t)))
+            getTest()
+            saveTestToDb()
+            console.log('raz na dzień');
+
+        };
+
+        everyDay();
+
+
+        const intervalId = setInterval(everyDay, 86400000);
+        return () => clearInterval(intervalId);
+    }, []);
+
     return (
       <NavigationContainer>
           <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />} initialRouteName="home"
@@ -132,12 +214,14 @@ function App(): JSX.Element {
               <Drawer.Screen name="results" component={Results} />
               {/*<Drawer.Screen name="tests" component={DisplayTests} options={{unmountOnBlur: true}} />*/}
               {/*<Stack.Screen name="test" component={Test} />*/}
-              {tests.map((t, index) => {
+              {tests != null ? _.shuffle(tests.map((t, index) => {
                   return(
                       <Drawer.Screen name={t.name} key={index} component={Test} initialParams={{id: t.id}} />
                   )
-              })}
-
+              })) : null}
+              { tests[tests.length-1] != null ? <Drawer.Screen name="losowy"  component={Test} initialParams={{id: tests[Math.floor(Math.random()*tests.length)].id}} />
+              : null }
+              <Drawer.Screen name="odśwież" component={Home} />
           </Drawer.Navigator>
       </NavigationContainer>
   );
