@@ -6,99 +6,39 @@
  */
 
 import React, { useEffect } from "react";
-import type {PropsWithChildren} from 'react';
 import {
   Platform,
-  SafeAreaView,
   ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
+  StyleSheet, Text, View
+
 } from "react-native";
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+
 import SplashScreen from 'react-native-splash-screen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Devices from "./components/Devices";
+import Connection from "./components/Connection";
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const Tab = createBottomTabNavigator();
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+
 
   useEffect(() => {
     if (Platform.OS === 'android') SplashScreen.hide()
   }, []);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator >
+        <Tab.Screen name="Devices" component={Devices}  options={{tabBarIconStyle: {display: 'none'}, tabBarLabelStyle: {color: 'black', fontWeight: 'bold', fontSize: 20,display: 'flex',flexDirection: 'row',flex: 1, justifyContent: 'center', padding: 10, alignItems: 'center', backgroundColor: '#d6d2d2', width: '100%', borderWidth: 1}}}/>
+        <Tab.Screen name="Connection" component={Connection} options={{tabBarIconStyle: {display: 'none'}, tabBarLabelStyle: {color: 'black', fontWeight: 'bold', fontSize: 20,display: 'flex',flexDirection: 'row',flex: 1, justifyContent: 'center', padding: 10, alignItems: 'center', backgroundColor: '#d6d2d2', width: '100%', borderWidth: 1}}}/>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
