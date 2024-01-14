@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Dimensions } from 'react-native'
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AddDevice from "./AddDevice";
 
 const halfWindowsWidth = Dimensions.get('window').width / 2.222
 const DeviceCell = (props) => {
@@ -37,7 +38,7 @@ const DeviceCell = (props) => {
   }
 
   const editDevice = () => {
-      console.log("edit")
+    props.setIdToEdit(props.id)
   }
 
   const turnOnOffDevice = () => {

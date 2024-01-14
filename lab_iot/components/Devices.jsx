@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import DeviceCell from "./DeviceCell";
 import AddDevice from "./AddDevice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import addDevice from "./AddDevice";
 
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Devices = () => {
   const [data, setData] = useState([])
   const [refreshing, setRefreshing] = useState(false);
+  const [idToEdit, setIdToEdit] = useState('')
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('key');
@@ -30,6 +32,9 @@ const Devices = () => {
     getData().then("getting data")
   }, []);
 
+
+
+
   return (
     <SafeAreaView style={styles.container}>
     <ScrollView
@@ -47,12 +52,13 @@ const Devices = () => {
                 command={device.config}
                 color={device.color}
                 key={index}
+                setIdToEdit={setIdToEdit}
               />
             )
           })
         ) : null
         }
-        <AddDevice />
+        <AddDevice idToEdit={idToEdit} setIdToEdit={setIdToEdit} />
 
       </View>
     </ScrollView>

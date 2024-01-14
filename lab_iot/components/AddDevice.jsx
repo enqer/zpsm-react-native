@@ -1,12 +1,12 @@
 import { Alert, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Dimensions } from 'react-native'
 import SelectColor from "./SelectColor";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'uuid-random';
 
 const halfWindowsWidth = Dimensions.get('window').width / 2.222
-const AddDevice = () => {
+const AddDevice = (props) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [color, setColor] = useState('')
@@ -27,9 +27,40 @@ const AddDevice = () => {
         command: command,
         color: color,
     }
-    // console.log(data)
-    storeData(data).then(r => console.log("storage done"))
+    if (props.idToEdit === '')
+      storeData(data).then(r => console.log("storage done"))
+    else
+      storeEditedData(data).then(r => console.log("storage done with edit"))
 
+  }
+  const storeEditedData = async (value) => {
+    try {
+      // await  AsyncStorage.clear() // for tests
+      let db = getData()
+
+      db.then(async (res) => {
+        for (let i = 0; i < res.length; i++) {
+            if (res[i].id === props.idToEdit){
+                res[i].name = value.name
+                res[i].place = value.place
+                res[i].command = value.command
+                res[i].color = value.color
+              await AsyncStorage.setItem('key', JSON.stringify(res));
+            }
+        }
+      })
+    } catch (e) {
+      console.log(e)
+    }
+    setModalVisible(false)
+  };
+
+  useEffect(() => {
+      if (props.idToEdit !== '')
+        editDevice(props.idToEdit)
+  }, [props.idToEdit]);
+  const editDevice = (id) => {
+      setModalVisible(true)
   }
 
   const storeData = async (value) => {
@@ -63,6 +94,11 @@ const AddDevice = () => {
       console.log(e)
     }
   };
+
+  const cancelModal = () => {
+    setModalVisible(!modalVisible)
+    props.setIdToEdit('')
+  }
 
   return(
     <TouchableOpacity
@@ -115,7 +151,7 @@ const AddDevice = () => {
             <View style={styles.btnWrapper}>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
+                onPress={cancelModal}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </Pressable>
               <Pressable
