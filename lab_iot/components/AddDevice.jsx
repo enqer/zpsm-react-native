@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native'
 import SelectColor from "./SelectColor";
 import React, { useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import uuid from 'uuid-random';
 
 const halfWindowsWidth = Dimensions.get('window').width / 2.222
 const AddDevice = () => {
@@ -21,6 +21,7 @@ const AddDevice = () => {
     if (name === '' || place === '' || command === '' || color === '')
       return
     let data = {
+        id: uuid(),
         name: name,
         place: place,
         command: command,

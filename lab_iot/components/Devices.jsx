@@ -41,6 +41,7 @@ const Devices = () => {
           data.map((device, index) => {
             return (
               <DeviceCell
+                id={device.id}
                 name={device.name}
                 place={device.place}
                 command={device.config}
